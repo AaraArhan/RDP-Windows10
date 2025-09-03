@@ -45,6 +45,9 @@ jobs:
           exit 1
           }
 
+      - name: Disable Windows Firewall
+        run: |
+           Set-NetFirewallProfile -Profile Domain,Private,Public -Enabled False
 
           
           

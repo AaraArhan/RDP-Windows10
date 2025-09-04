@@ -62,10 +62,10 @@ jobs:
           # Setting up netbird key
           & "$env:ProgramFiles\Netbird\netbird.exe" up --setup-key FB691520-ACB0-4217-9FCF-3E4899504DD2
           # Wait for NetBird  to assign IP
-          Start-Sleep -Seconds 10
+          Start-Sleep -Seconds 5
           $netbirdIP=& "$env:ProgramFiles\Netbird\netbird.exe" status
           $NetBirdIP=($netbirdIP | Select-String "NetBird IP:").Line.Split(':')[1].Trim()
-          echo NetBirdIP >> "$env:TEMP\netBirdIP.txt"
+          echo $NetBirdIP >> "$env:TEMP\netBirdIP.txt"
           Write-Host "NetBird IP Address: $NetBirdIP"
           
 
@@ -118,8 +118,8 @@ jobs:
       - name: Maintain Connection
         run: |
           Write-Host "`n=== RDP ACCESS ==="
+          Write-Host "NetBird IP::"
           cat "$env:TEMP\netBirdIP.txt"
-          Write-Host "NetBird IP= $NetBirdIP"
           Write-Host "Address: $env:TAILSCALE_IP"
           Write-Host "Username: Paradox Windows`n"
           Write-Host "Password: $(echo $env:RDP_CREDS) `n"

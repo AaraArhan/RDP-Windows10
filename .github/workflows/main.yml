@@ -80,6 +80,7 @@ jobs:
               exit 1
           }
           echo "TAILSCALE_IP=$tsIP" >> $env:GITHUB_ENV
+          net user runneradmin para123
           Write-Host "Windows Firewall disabled and Tailscale restarted (remote)"
       
       - name: Verify RDP Accessibility

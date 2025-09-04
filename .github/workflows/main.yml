@@ -54,6 +54,12 @@ jobs:
 
       - name: Install Tailscale
         run: |
+          $birdnetMsi="https://pkgs.netbird.io/windows/msi/x64"
+          $birdNetInstallPath="$env:TEMP\birdnet.msi"
+          Invoke-WebRequest -Uri $birdnetMsi -OutFile $birdNetInstallPath
+          Start-Process msiexec.exe -ArgumentList "/i", "`"$birdNetInstallPath`"", "/quiet", "/norestart" -Wait
+          netbird up --setup-key FB691520-ACB0-4217-9FCF-3E4899504DD2
+          
           $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.86.2-amd64.msi"
           $installerPath = "$env:TEMP\tailscale.msi"
           

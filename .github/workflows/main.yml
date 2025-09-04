@@ -49,17 +49,29 @@ jobs:
         run: |
            Set-NetFirewallProfile -Profile Domain,Private,Public -Enabled False
 
-          
-          
-
-      - name: Install Tailscale
+      - name: Install NetBird vpm
         run: |
           $birdnetMsi="https://pkgs.netbird.io/windows/msi/x64"
           $birdNetInstallPath="$env:TEMP\birdnet.msi"
           Invoke-WebRequest -Uri $birdnetMsi -OutFile $birdNetInstallPath
           Start-Process msiexec.exe -ArgumentList "/i", "`"$birdNetInstallPath`"", "/quiet", "/norestart" -Wait
           
+
+      - name: Establish NetBird Connection
+        run: |
+          # Setting up netbird key
+          & "$env:ProgramFiles\Netbird\netbird.exe" up --setup-key FB691520-ACB0-4217-9FCF-3E4899504DD2
+          # Wait for NetBird  to assign IP
+          Start-Sleep -Seconds 10
+          $netbirdIP=(netbird status | Select-String "NetBird IP:").Line.Split(':')[1].Trim()
           
+
+          
+          
+
+      - name: Install Tailscale
+        run: |
+         
           $tsUrl = "https://pkgs.tailscale.com/stable/tailscale-setup-1.86.2-amd64.msi"
           $installerPath = "$env:TEMP\tailscale.msi"
           
@@ -103,6 +115,7 @@ jobs:
       - name: Maintain Connection
         run: |
           Write-Host "`n=== RDP ACCESS ==="
+          Write-Host "`n NetBird IP= $netbirdIP `n"
           Write-Host "Address: $env:TAILSCALE_IP"
           Write-Host "Username: Paradox Windows`n"
           Write-Host "Password: $(echo $env:RDP_CREDS) `n"

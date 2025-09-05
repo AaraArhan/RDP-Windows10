@@ -38,7 +38,7 @@ jobs:
           Add-LocalGroupMember -Group "Administrators" -Member $UserName
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member $UserName
 
-          echo "RDP_CREDS=UserName:: $UserName | Password:: $PlainPassword" >> $env:GITHUB_ENV
+          echo "RDP_CREDS=UserName: $UserName | Password: $PlainPassword" >> $env:GITHUB_ENV
 
           if (-not (Get-LocalUser -Name $UserName)) {
             Write-Error "User creation failed"
@@ -118,11 +118,13 @@ jobs:
 
       - name: Maintain Connection
         run: |
+          $UserName=$env:RDP_CREDS.Split('|')[0].Trim()
+          $Pass=$env:RDP_CREDS.Split('|')[1].Trim()
           Write-Host "`n=== RDP ACCESS ==="
           Write-Host "$(echo $env:NETBIRD_IP)"
           cat "$env:TEMP\netBirdIP.txt"
           Write-Host "Address: $env:TAILSCALE_IP"
-          Write-Host "$(echo $env:RDP_CREDS) `n"
+          Write-Host "$UserName `n $Pass"
           Write-Host "==================`n"
           
           # Keep runner active indefinitely (or until manually cancelled)

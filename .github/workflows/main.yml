@@ -65,6 +65,7 @@ jobs:
           Start-Sleep -Seconds 5
           $netbirdIP=& "$env:ProgramFiles\Netbird\netbird.exe" status
           $NetBirdIP=($netbirdIP | Select-String "NetBird IP:").Line.Split(':')[1].Trim()
+          echo "NETBIRD_IP=NetBird IP: $NetBirdIP" >> $env:GITHUB_ENV
           echo $NetBirdIP >> "$env:TEMP\netBirdIP.txt"
           Write-Host "NetBird IP Address: $NetBirdIP"
           
@@ -118,7 +119,7 @@ jobs:
       - name: Maintain Connection
         run: |
           Write-Host "`n=== RDP ACCESS ==="
-          Write-Host "NetBird IP::"
+          Write-Host "$(echo $env:NETBIRD_IP)"
           cat "$env:TEMP\netBirdIP.txt"
           Write-Host "Address: $env:TAILSCALE_IP"
           Write-Host "$(echo $env:RDP_CREDS) `n"
